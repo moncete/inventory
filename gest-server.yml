@@ -1,0 +1,31 @@
+---
+- name: Buscar nodo
+  shell: grep "{{ item }}" ./inventario
+  ignore_errors: yes
+  register: exist_host
+  tags : Crear
+
+- name: IP servidor nuevo
+  shell: host "{{ item }}" | awk '{print $4}'
+  register: ip_host
+  when: exist_host.stdout == ""
+  tags: Crear
+
+- name: Dar de alta nuevo servidor
+  lineinfile:
+    path: ./inventario
+    #backrefs: yes
+    #regexp: '^\[{{ ENT }}_{{ TIPO }}\]$' -> REEMPLAZA LA ETIQUETA 
+    insertafter: '^\[{{ ENT }}_{{ TIPO }}\]$[\n]'
+    line: "{{ item }} ip={{ ip_host.stdout_lines[0] }}"
+    #firstmatch: yes -> DEPENDE DE LA VERSION DE ANSIBLE 
+    state: present
+  when: exist_host.stdout == ""
+  tags: Crear
+
+- name: Borrado del servidor
+  lineinfile:
+    path: ./inventario
+    regexp: '^{{ item }}'
+    state: absent
+  tags: Borrar

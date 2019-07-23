@@ -1,0 +1,8 @@
+[epd_server]
+
+
+
+
+[epd_agent]
+vliamd007 ip=10.64.35.183
+vliamd232 ip=10.64.44.229

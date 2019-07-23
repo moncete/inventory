@@ -1,0 +1,8 @@
+---
+- hosts: localhost
+  connection: local
+
+  tasks:
+    #- include: gest-server.yml nodo="{{ item }}"
+    - include: gest-server.yml
+      with_items: "{{ host.split(',')}}"
